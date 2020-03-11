@@ -11,5 +11,6 @@ git 操作步骤:
    7 git add .
    8 git commit -m "备注"
    9 git push git 
-   10 追加 提交  git commit --amend --no-edit
+   10 追加 提交  git commit --amend --no-edit;
+   11 再次追加
    
