@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class helloController {
-    @GetMapping("/hello")
-    public  String hello(@RequestParam(name = "name",required = true,defaultValue = "hu") String name,Model model){
-
-   model.containsAttribute(name);
-        return "Hello";
+public class IndexController {
+    @GetMapping("/")
+    public String index(){
+        return "index";
     }
 }
