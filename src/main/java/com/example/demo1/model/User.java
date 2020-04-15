@@ -1,5 +1,10 @@
 package com.example.demo1.model;
 
+import com.alibaba.fastjson.JSON;
+import org.junit.Test;
+
+import java.lang.reflect.Type;
+
 public class User {
 
     private  int id ;
@@ -7,6 +12,9 @@ public class User {
     private   String accountId;
     private   String name;
     private   String token;
+    private   Long gmtCreate;
+    private   Long gmtModified;
+    private   String avatarUrl;
 
     public int getId() {
         return id;
@@ -56,8 +64,16 @@ public class User {
         this.gmtModified = gmtModefied;
     }
 
-    private   Long gmtCreate;
-    private   Long gmtModified;
+
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
 
 
 }

@@ -5,8 +5,8 @@ import com.example.demo1.dto.GithubUserDTO;
 import com.example.demo1.mapper.UserMapper;
 import com.example.demo1.model.User;
 import com.example.demo1.provider.GithubProvider;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import okhttp3.Response;
+
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -61,6 +61,7 @@ public class AuthorizeController {
               user.setToken(token);
               user.setGmtCreate(System.currentTimeMillis());
               user.setGmtModified(user.getGmtCreate());
+              user.setAvatarUrl(githubUserDTO.getAvatarUrl());
               userMapper.insert(user);
               response.addCookie(new Cookie("token",token));
 
@@ -71,4 +72,5 @@ public class AuthorizeController {
              return "redirect:/" ;
           }
      }
+
 }

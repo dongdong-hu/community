@@ -1,5 +1,7 @@
 package com.example.demo1.dto;
 
+import com.example.demo1.model.User;
+
 public class QuestionDTO {
 
     private Long id;
@@ -9,6 +11,15 @@ public class QuestionDTO {
     private Long gmtCreate;
     private Long gmtModified;
     private Long creator;
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
