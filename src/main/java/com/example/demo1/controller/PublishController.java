@@ -5,11 +5,13 @@ import com.example.demo1.mapper.QuestionMapper;
 import com.example.demo1.mapper.UserMapper;
 import com.example.demo1.model.Question;
 import com.example.demo1.model.User;
+import com.example.demo1.service.QuestionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,11 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class PublishController {
 
-    @Autowired
-    private  UserMapper userMapper;
+
 
     @Autowired
     private QuestionMapper questionMapper;
+    @Autowired
+    private QuestionService questionService;
     @GetMapping("/publish")
     public  String publish(){
 
@@ -37,19 +40,9 @@ public class PublishController {
                              @RequestParam(value = "tag" , required = false) String tag,
                              HttpServletRequest request,
                              Model model){
-      Cookie[] cookies =  request.getCookies();
-        User user = null;
-        for (Cookie cookie: cookies) {
-            if(cookie.getName().equals("token")){
-                String token = cookie.getValue();
-                user =  userMapper.getUser(token);
-                if(user != null){
-                    request.getSession().setAttribute("user" ,user);
-                }
-                break;
-            }
 
-        }
+        User user = (User) request.getSession().getAttribute("user");
+
         if (user==null){
             model.addAttribute("error","用户未登陆！");
             return "publish";
@@ -80,5 +73,14 @@ public class PublishController {
 
      return "redirect:/";
 
+    }
+
+    @GetMapping("/publish/{id}")
+    public String getPublish(@PathVariable(name = "id") Long id,
+                             Model model){
+
+        QuestionDTO questionDTO = questionService.getById(id);
+        model.addAttribute("question" ,questionDTO );
+        return "/publish";
     }
 }
