@@ -20,7 +20,9 @@ public interface UserMapper {
     @Select("select * from user u where u.token = #{token}")
     User getUser(@RequestParam(name = "token") String token);
 
+    @Select("select * from user u where u.account_id = #{accountId}")
+    User queryByAccountId(@Param("accountId") String accountId);
 
-
-
+    @Select("update user u set  u.token = #{user.token}, u.gmt_modified = #{user.gmtModified}, u.avatar_url = #{user.avatarUrl} where u.account_id = #{user.account_id} ")
+    void updateUser(User user);
 }

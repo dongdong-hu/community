@@ -1,5 +1,8 @@
 package com.example.demo1.model;
 
+import lombok.Data;
+
+@Data
 public class Question {
 
     private Long id;

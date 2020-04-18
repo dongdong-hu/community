@@ -99,4 +99,14 @@ public class QuestionService {
 
         return questionDTO;
     }
+
+    public void createOrUpdate(Question question) {
+       Question dbQuestion =  questionMapper.getById(question.getId());
+       if(dbQuestion != null){
+           question.setGmtModified(System.currentTimeMillis());
+           questionMapper.update(question);
+       }else{
+           questionMapper.insertQuestion(question);
+        }
+    }
 }

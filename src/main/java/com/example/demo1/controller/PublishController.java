@@ -5,6 +5,7 @@ import com.example.demo1.mapper.QuestionMapper;
 import com.example.demo1.mapper.UserMapper;
 import com.example.demo1.model.Question;
 import com.example.demo1.model.User;
+import com.example.demo1.service.PublishService;
 import com.example.demo1.service.QuestionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class PublishController {
     private QuestionMapper questionMapper;
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private PublishService publishService;
+
     @GetMapping("/publish")
     public  String publish(){
 
@@ -35,9 +40,10 @@ public class PublishController {
     }
 
     @PostMapping("/publish")
-    public  String doPublish(@RequestParam(value = "title", required = false) String title,
-                             @RequestParam(value = "description", required = false) String description,
-                             @RequestParam(value = "tag" , required = false) String tag,
+    public  String doPublish(@RequestParam(name = "title", required = false) String title,
+                             @RequestParam(name = "description", required = false) String description,
+                             @RequestParam(name = "tag" , required = false) String tag,
+                             @RequestParam(name = "id" ,required = false) Long id,
                              HttpServletRequest request,
                              Model model){
 
@@ -69,7 +75,9 @@ public class PublishController {
         question.setGmtModified(question.getGmtCreate());
         question.setCreator(user.getId());
 
-        questionMapper.insertQuestion(question);
+        question.setId(id);
+        questionService.createOrUpdate(question);
+
 
      return "redirect:/";
 
@@ -80,7 +88,10 @@ public class PublishController {
                              Model model){
 
         QuestionDTO questionDTO = questionService.getById(id);
-        model.addAttribute("question" ,questionDTO );
+        model.addAttribute("title" ,questionDTO.getTitle() );
+        model.addAttribute("description" ,questionDTO.getDescription());
+        model.addAttribute("tag" ,questionDTO.getTag() );
+        model.addAttribute("id" ,questionDTO.getId());
         return "/publish";
     }
 }

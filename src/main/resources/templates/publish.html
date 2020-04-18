@@ -5,9 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="/gitcss/community.css">
+    <link rel="stylesheet" href="/css/community.css">
     <script src="/js/jquery-3.5.0.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -18,13 +18,14 @@
             <h3><span class="glyphicon glyphicon-plus" aria-hidden="true">发起</span></h3>
              <hr/>
              <form action="/publish" method="post">
+                 <input id = "id" name="id" th:value="${id}" type="hidden">
                  <div class="form-group">
                      <label for="title">问题标题（简单扼要）:</label>
                      <input type="text" class="form-control" id="title" th:value="${title}" name="title" placeholder="问题标题.....">
                  </div>
                  <div class="form-group">
                      <label for="description">问题补充 (必填，请参照右侧提示):</label>
-                     <textarea type="text" class="form-control" id="description" th:value="${description}"  cols="30" rows="10" name="description"></textarea>
+                     <textarea  class="form-control" id="description"  name="description" th:value="${description}"  cols="30" rows="10"></textarea>
 
                  </div>
 

@@ -10,7 +10,7 @@ public class QuestionDTO {
     private String tag;
     private Long gmtCreate;
     private Long gmtModified;
-    private Long creator;
+    private int creator;
     private User user;
 
     public User getUser() {
@@ -69,11 +69,11 @@ public class QuestionDTO {
         this.gmtModified = gmtModified;
     }
 
-    public Long getCreator() {
+    public int getCreator() {
         return creator;
     }
 
-    public void setCreator(Long creator) {
+    public void setCreator(int creator) {
         this.creator = creator;
     }
 
@@ -106,4 +106,21 @@ public class QuestionDTO {
     private Integer viewCount;
     private Integer commentCount;
     private Integer likeCount;
+
+    @Override
+    public String toString() {
+        return "QuestionDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", tag='" + tag + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModified=" + gmtModified +
+                ", creator=" + creator +
+                ", user=" + user +
+                ", viewCount=" + viewCount +
+                ", commentCount=" + commentCount +
+                ", likeCount=" + likeCount +
+                '}';
+    }
 }
