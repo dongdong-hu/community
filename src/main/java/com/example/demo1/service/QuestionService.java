@@ -5,7 +5,10 @@ import com.example.demo1.dto.QuestionDTO;
 import com.example.demo1.mapper.QuestionMapper;
 import com.example.demo1.mapper.UserMapper;
 import com.example.demo1.model.Question;
+import com.example.demo1.model.QuestionExample;
 import com.example.demo1.model.User;
+import com.example.demo1.model.UserExample;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,8 @@ public class QuestionService {
 
         List<QuestionDTO> questions = new ArrayList<QuestionDTO>();
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount =  questionMapper.getCount();
+        QuestionExample example = new QuestionExample();
+        Integer totalCount =  (int)questionMapper.countByExample(example);
         paginationDTO.setPagination(totalCount,page,size);
         if(page < 1){
             page = 1;
@@ -35,12 +39,18 @@ public class QuestionService {
             page = paginationDTO.getTotalPage();
         }
         Integer offset = size * (page -1);
-        List<Question> list = questionMapper.list(offset,size);
+        //QuestionExample example1 = new QuestionExample();
+
+        List<Question> list = questionMapper.selectByExampleWithBLOBsWithRowbounds(new QuestionExample(),new RowBounds(offset,size));//list(offset,size);
         paginationDTO.setPage(page);
         for (Question question:
              list) {
            int a =  question.getCreator();
-           User user =  userMapper.queryById(question.getCreator());
+            UserExample uExample = new UserExample();
+            uExample.createCriteria().andIdEqualTo(question.getCreator());
+            List<User> userList =    userMapper.selectByExample(uExample);
+            User user = userList.get(0);
+            //User user =  userMapper.queryById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -59,7 +69,10 @@ public class QuestionService {
 
         List<QuestionDTO> questions = new ArrayList<QuestionDTO>();
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount =  questionMapper.getCountByid(userID);
+        QuestionExample qExample = new QuestionExample();
+        qExample.createCriteria().andCreatorEqualTo(userID);
+        Integer totalCount =  (int)questionMapper.countByExample(qExample);
+       // Integer totalCount =  questionMapper.getCountByid(userID);
         paginationDTO.setPagination(totalCount,page,size);
         if(page < 1){
             page = 1;
@@ -69,12 +82,20 @@ public class QuestionService {
             page = paginationDTO.getTotalPage();
         }
         Integer offset = size * (page -1);
-        List<Question> list = questionMapper.listByid(userID,offset,size);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andCreatorEqualTo(userID);
+        List<Question> list = questionMapper.selectByExampleWithBLOBsWithRowbounds(questionExample,new RowBounds(offset,size));//list(offset,size);
+
+        //List<Question> list = questionMapper.listByid(userID,offset,size);
         paginationDTO.setPage(page);
         for (Question question:
                 list) {
             int a =  question.getCreator();
-            User user =  userMapper.queryById(question.getCreator());
+            UserExample example = new UserExample();
+            example.createCriteria().andIdEqualTo(question.getCreator());
+            List<User> userList =  userMapper.selectByExample(example);
+            User user = userList.get(0);
+           // User user =  userMapper.queryById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
@@ -90,23 +111,40 @@ public class QuestionService {
 
     }
 
-    public QuestionDTO getById(Long id) {
-        Question question  = questionMapper.getById(id);
+    public QuestionDTO getById(Integer id) {
+        Question question =  questionMapper.selectByPrimaryKey(id);
+       // Question question  = questionMapper.getById(id);
         QuestionDTO questionDTO = new QuestionDTO();
          BeanUtils.copyProperties(question,questionDTO);
-        User user =  userMapper.queryById(question.getCreator());
+        UserExample example = new UserExample();
+        example.createCriteria().andIdEqualTo(question.getCreator());
+        List<User> list =  userMapper.selectByExample(example);
+        User user = list.get(0);
+       // User user =  userMapper.queryById(question.getCreator());
         questionDTO.setUser(user);
 
         return questionDTO;
     }
 
     public void createOrUpdate(Question question) {
-       Question dbQuestion =  questionMapper.getById(question.getId());
+      Question dbQuestion =   questionMapper.selectByPrimaryKey(question.getId());
+      // Question dbQuestion =  questionMapper.getById(question.getId());
        if(dbQuestion != null){
            question.setGmtModified(System.currentTimeMillis());
-           questionMapper.update(question);
+
+           QuestionExample example = new QuestionExample();
+           example.createCriteria().andIdEqualTo(question.getId());
+           Question updateQuestion = new Question();
+           updateQuestion.setGmtCreate(dbQuestion.getGmtCreate());
+           updateQuestion.setGmtModified(System.currentTimeMillis());
+           updateQuestion.setTag(question.getTag());
+           updateQuestion.setDescription(question.getDescription());
+           updateQuestion.setTitle(question.getTitle());
+           questionMapper.updateByExampleSelective(updateQuestion, example);
+           //questionMapper.update(question);
        }else{
-           questionMapper.insertQuestion(question);
+            questionMapper.insertSelective(question);
+          // questionMapper.insertQuestion(question);
         }
     }
 }

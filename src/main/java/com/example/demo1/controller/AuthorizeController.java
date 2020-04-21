@@ -34,8 +34,8 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirectUri;
 
-    @Autowired
-    private UserMapper userMapper;
+    //@Autowired
+   // private UserMapper userMapper;
     @Autowired
     private UserService userService;
 
